@@ -45,7 +45,7 @@ if ($itemsCount = $block->getItemsCount()) {
         <?php foreach ($block->getPeriods() as $period) : ?>
             <?php $_items = $block->getItemsCollection($period); ?>
             <?php if ($_items->count()): ?>
-            <div class="items period-<?= $period ?>" data-role="tab-content" data-tab-id="<?= $period ?>">
+            <div class="items period-<?= $period ?><?php if ($itemsCount == 1): ?> _active<?php endif; ?>" data-role="tab-content" data-tab-id="<?= $period ?>">
                 <div class="products-<?= /* @escapeNotVerified */ $mode ?> <?= /* @escapeNotVerified */ $mode ?>">
                     <ol class="product-items">
                         <?php $iterator = 1; ?>

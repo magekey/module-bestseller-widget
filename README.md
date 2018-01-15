@@ -1,7 +1,5 @@
 # Magento 2 Bestseller Widget
 
-![alt text](https://raw.githubusercontent.com/magekey/module-bestseller-widget/master/docs/images/priview.png)
-
 ## Features:
 
 - Bestseller Daily Widget
