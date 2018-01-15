@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © MageKey. All rights reserved.
+ */
+-->
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+    <widget id="mgk_bestseller" class="MageKey\BestsellerWidget\Block\Widget" is_email_compatible="true" ttl="86400">
+        <label translate="true">Bestsellers</label>
+        <description translate="true">List of bestseller products</description>
+        <parameters>
+            <parameter name="title" xsi:type="text" required="false" visible="true" sort_order="10">
+                <label translate="true">Title</label>
+            </parameter>
+            <parameter name="weekly" xsi:type="select" visible="true" sort_order="20"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Display Weekly</label>
+            </parameter>
+            <parameter name="monthly" xsi:type="select" visible="true" sort_order="30"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Display Monthly</label>
+            </parameter>
+            <parameter name="yearly" xsi:type="select" visible="true" sort_order="40"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Display Yearly</label>
+            </parameter>
+            <parameter name="products_count" xsi:type="text" required="true" visible="true" sort_order="50">
+                <label translate="true">Number of Products</label>
+                <value>4</value>
+            </parameter>
+            <parameter name="template" xsi:type="select" visible="true" required="true" sort_order="60">
+                <label translate="true">Template</label>
+                <options>
+                    <option name="default" value="widget/bestseller.phtml" selected="true">
+                        <label translate="true">Bestseller Default Template</label>
+                    </option>
+                </options>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>

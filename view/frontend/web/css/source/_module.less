@@ -1,0 +1,26 @@
+// /**
+//  * Copyright © MageKey. All rights reserved.
+//  */
+
+.block-mgk-bestseller {
+    .block {
+        &-content {
+            .tab {
+                &-links {
+                    overflow: hidden;
+                }
+                &-link {
+                    display: inline-block;
+                    .lib-css(margin-right, @indent__s);
+                }
+            }
+            .items {
+                display: none;
+
+                &._active {
+                    display: block;
+                }
+            }
+        }
+    }
+}
