@@ -123,7 +123,7 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
         $counter = 0;
         foreach ($this->getPeriods() as $period) {
             $collection = $this->getItemsCollection($period);
-            if ($collection && $collection->count()) {
+            if ($collection && $collection->getSize()) {
                 $counter++;
             }
         }
@@ -206,10 +206,10 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
                         ];
                         break;
                     case 'yearly':
-                    $interval = [
-                        'start' => $this->_localeDate->scopeDate(null, 'first day of this year', false),
-                        'end' => $this->_localeDate->scopeDate(null, 'last day of this year', false),
-                    ];
+                        $interval = [
+                            'start' => $this->_localeDate->scopeDate(null, 'first day of this year', false),
+                            'end' => $this->_localeDate->scopeDate(null, 'last day of this year', false),
+                        ];
                         break;
                     default:
                         break 2;
