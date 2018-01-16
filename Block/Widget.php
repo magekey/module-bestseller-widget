@@ -63,16 +63,30 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
     }
 
     /**
-     * Retrieve available periods
+     * Retrieve aggregation periods
      *
      * @return array
      */
-    public function getAvailablePeriods()
+    public function getAggregationPeriods()
+    {
+        return [
+            'weekly' => 'day',
+            'monthly' => 'month',
+            'yearly' => 'year',
+        ];
+    }
+
+    /**
+     * Retrieve period labels
+     *
+     * @return array
+     */
+    public function getLabels()
     {
         return [
             'weekly' => __('Weekly'),
             'monthly' => __('Monthly'),
-            'yearly' => __('Yearly')
+            'yearly' => __('Yearly'),
         ];
     }
 
@@ -85,7 +99,7 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
     {
         if (!$this->hasData('periods')) {
             $periods = [];
-            foreach ($this->getAvailablePeriods() as $code => $title) {
+            foreach ($this->getAggregationPeriods() as $code => $period) {
                 if ($this->getData($code)) {
                     $periods[] = $code;
                 }
@@ -162,9 +176,10 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
      */
     protected function _createReportCollection($period)
     {
+        $aggregationPeriods = $this->getAggregationPeriods();
         $collection = $this->_bestsellersCollectionFactory->create()
             ->setPeriod(
-                $period
+                $aggregationPeriods[$period]
             )
             ->addStoreFilter(
                 $this->_storeManager->getStore()->getId()
