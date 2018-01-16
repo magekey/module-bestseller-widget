@@ -25,27 +25,29 @@ if ($itemsCount = $block->getItemsCount()) {
 ?>
 
 <?php if ($itemsCount): ?>
-<div class="block widget block-mgk-bestseller"
-     data-mage-init='{
-        "MageKey_BestsellerWidget/js/bestseller-tabs": {}
-     }'>
+<div class="block widget block-mgk-bestseller">
     <?php if ($title): ?>
     <div class="block-title">
         <strong role="heading" aria-level="2"><?= $block->escapeHtml($title) ?></strong>
     </div>
     <?php endif; ?>
-    <div class="block-content">
+    <div class="block-content"
+         data-mage-init='{
+            "tabs": {"openedState":"active"}
+         }'>
         <?php if ($itemsCount > 1): ?>
         <div class="tab-links">
             <?php foreach ($block->getPeriods() as $period) : ?>
-            <a data-role="tab-link" class="tab-link action" href="#<?= $period ?>"><?= $periodLabels[$period] ?></a>
+            <div class="tab-title" data-role="collapsible">
+                <a class="tab-link action" data-toggle="switch" href="#bestseller-<?= $period ?>"><?= $periodLabels[$period] ?></a>
+            </div>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
         <?php foreach ($block->getPeriods() as $period) : ?>
             <?php $_items = $block->getItemsCollection($period); ?>
             <?php if ($_items->count()): ?>
-            <div class="items period-<?= $period ?><?php if ($itemsCount == 1): ?> _active<?php endif; ?>" data-role="tab-content" data-tab-id="<?= $period ?>">
+            <div class="items period-<?= $period ?>" id="#bestseller-<?= $period ?>" data-role="content">
                 <div class="products-<?= /* @escapeNotVerified */ $mode ?> <?= /* @escapeNotVerified */ $mode ?>">
                     <ol class="product-items">
                         <?php $iterator = 1; ?>
