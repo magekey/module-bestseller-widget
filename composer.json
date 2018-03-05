@@ -1,13 +1,14 @@
 {
     "name": "magekey/module-bestseller-widget",
     "description": "Magento 2 Bestseller Widget",
-    "require": {
-        "php": "7.0.2|7.0.4|~7.0.6|~7.1.0"
-    },
     "type": "magento2-module",
+    "license": "MIT",
     "version": "2.0.2",
-    "license": [
-        "MIT"
+    "authors": [
+        {
+            "name": "Nicholas Miller",
+            "email": "nick@magekey.com"
+        }
     ],
     "autoload": {
         "files": [
