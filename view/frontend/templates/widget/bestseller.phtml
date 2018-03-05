@@ -38,15 +38,18 @@ if ($itemsCount = $block->getItemsCount()) {
         <?php if ($itemsCount > 1): ?>
         <div class="tab-links">
             <?php foreach ($block->getPeriods() as $period) : ?>
-            <div class="tab-title" data-role="collapsible">
-                <a class="tab-link action" data-toggle="switch" href="#bestseller-<?= $period ?>"><?= $periodLabels[$period] ?></a>
-            </div>
+                <?php $_items = $block->getItemsCollection($period); ?>
+                <?php if ($_items && $_items->count()): ?>
+                <div class="tab-title" data-role="collapsible">
+                    <a class="tab-link action" data-toggle="switch" href="#bestseller-<?= $period ?>"><?= $periodLabels[$period] ?></a>
+                </div>
+                <?php endif; ?>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
         <?php foreach ($block->getPeriods() as $period) : ?>
             <?php $_items = $block->getItemsCollection($period); ?>
-            <?php if ($_items->count()): ?>
+            <?php if ($_items && $_items->count()): ?>
             <div class="items period-<?= $period ?>" id="#bestseller-<?= $period ?>" data-role="content">
                 <div class="products-<?= /* @escapeNotVerified */ $mode ?> <?= /* @escapeNotVerified */ $mode ?>">
                     <ol class="product-items">
