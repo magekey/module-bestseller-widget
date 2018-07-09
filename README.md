@@ -9,10 +9,15 @@
 - Bestseller Daily Widget
 - Bestseller Monthly Widget
 - Bestseller Yearly Widget
+- Cron Job to refresh bestsellers statistics every day
 
 ## Installing the Extension
 
     composer require magekey/module-bestseller-widget
+
+## Refresh bestsellers statistics manually
+
+	php bin/magento statistics:bestsellers:refresh
 
 ## Deployment
 
@@ -24,5 +29,4 @@
     php bin/magento maintenance:disable                 #Disable maintenance mode
 
 ## Versions tested
-> 2.2.2
-> 2.2.3
+> 2.2.5
