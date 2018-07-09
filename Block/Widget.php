@@ -6,10 +6,11 @@
 namespace MageKey\BestsellerWidget\Block;
 
 use Magento\Widget\Block\BlockInterface;
+use Magento\Catalog\Model\Product\Visibility as ProductVisibility;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
-use Magento\Sales\Model\ResourceModel\Report\Bestsellers\Collection as BestsellersCollection;
-use Magento\Sales\Model\ResourceModel\Report\Bestsellers\CollectionFactory as BestsellersCollectionFactory;
+
+use MageKey\BestsellerWidget\Model\ResourceModel\BestsellersCollectionFactory;
 
 class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements BlockInterface
 {
@@ -29,6 +30,11 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
     protected $_productCollectionFactory;
 
     /**
+     * @var ProductVisibility
+     */
+    protected $_catalogProductVisibility;
+
+    /**
      * @var array
      */
     protected $_items = [];
@@ -37,16 +43,19 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
      * @param \Magento\Catalog\Block\Product\Context $context
      * @param BestsellersCollectionFactory $bestsellersCollectionFactory
      * @param ProductCollectionFactory $productCollectionFactory
+     * @param ProductVisibility $catalogProductVisibility
      * @param array $data
      */
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         BestsellersCollectionFactory $bestsellersCollectionFactory,
         ProductCollectionFactory $productCollectionFactory,
+        ProductVisibility $catalogProductVisibility,
         array $data = []
     ) {
         $this->_bestsellersCollectionFactory = $bestsellersCollectionFactory;
         $this->_productCollectionFactory = $productCollectionFactory;
+        $this->_catalogProductVisibility = $catalogProductVisibility;
         parent::__construct(
             $context,
             $data
@@ -154,11 +163,7 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
     public function getItemsCollection($period)
     {
         if (!array_key_exists($period, $this->_items)) {
-            $reportCollection = $this->_createReportCollection($period);
-            $productIds = [];
-            foreach ($reportCollection as $item) {
-                $productIds[] = $item->getProductId();
-            }
+            $productIds = $this->_getReportProductIds($period);
             if (!empty($productIds)) {
                 $productCollection = $this->_createProductCollection($productIds);
             } else {
@@ -170,12 +175,12 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
     }
 
     /**
-     * Create report collection
+     * Retrieve report product ids
      *
      * @param string $period
-     * @return BestsellersCollection
+     * @return array
      */
-    protected function _createReportCollection($period)
+    protected function _getReportProductIds($period)
     {
         $aggregationPeriods = $this->getAggregationPeriods();
         $collection = $this->_bestsellersCollectionFactory->create()
@@ -184,10 +189,8 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
             )
             ->addStoreFilter(
                 $this->_storeManager->getStore()->getId()
-            )
-            ->setPageSize(
-                $this->getProductsCount()
             );
+
         $intervals = $this->_getReportIntervals();
         if (isset($intervals[$period])) {
             $collection->setDateRange(
@@ -195,7 +198,32 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
                 $intervals[$period]->getEnd()->format('Y-m-d')
             );
         }
-        return $collection;
+
+        $reportSelect = $collection
+            ->loadSelect()
+            ->getSelect();
+
+        $connection = $collection->getConnection();
+        $wrapperSelect = $connection->select()
+            ->from(
+                ['report' => $reportSelect],
+                false
+            )
+            ->columns([
+                'id' => new \Zend_Db_Expr('IF(linked.parent_id IS NULL, report.product_id, linked.parent_id)')
+            ])
+            ->joinLeft(
+                ['linked' => $connection->getTableName('catalog_product_super_link')],
+                'linked.product_id = report.product_id',
+                false
+            )
+            ->limit(
+                $this->getProductsCount()
+            );
+
+        $result = $connection->fetchCol($wrapperSelect);
+
+        return array_unique($result);
     }
 
     /**
@@ -207,7 +235,7 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
     {
         if (!$this->hasData('report_intervals')) {
             $intervals = [];
-            foreach ($this->getPeriods() as $code => $title) {
+            foreach ($this->getPeriods() as $code) {
                 switch ($code) {
                     case 'weekly':
                         $interval = [
@@ -245,10 +273,12 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
      */
     protected function _createProductCollection(array $productIds)
     {
-        $collection = $this->_productCollectionFactory->create();
-        $this->_addProductAttributesAndPrices(
-            $collection
-        )->addIdFilter($productIds);
+        $collection = $this->_productCollectionFactory
+            ->create()
+            ->setVisibility($this->_catalogProductVisibility->getVisibleInCatalogIds());
+        $this->_addProductAttributesAndPrices($collection)
+            ->addStoreFilter()
+            ->addIdFilter($productIds);
         return $collection;
     }
 }
