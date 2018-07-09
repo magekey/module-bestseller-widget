@@ -13,9 +13,9 @@
             </argument>
         </arguments>
     </type>
-    <type name="MageKey\BestsellerWidget\Console\Command\RefreshBestsellers">
+    <type name="MageKey\BestsellerWidget\Model\BestsellersReport">
         <arguments>
-            <argument name="bestsellersReportType" xsi:type="string">Magento\Sales\Model\ResourceModel\Report\Bestsellers</argument>
+            <argument name="reportType" xsi:type="string">Magento\Sales\Model\ResourceModel\Report\Bestsellers</argument>
         </arguments>
     </type>
 </config>
