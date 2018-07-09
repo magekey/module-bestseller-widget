@@ -22,6 +22,8 @@ if ($itemsCount = $block->getItemsCount()) {
     $showCompare = true;
     $showCart = true;
     $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::DEFAULT_VIEW;
+    $activeTab = 0;
+    $iterator = 1;
 }
 ?>
 
@@ -34,7 +36,7 @@ if ($itemsCount = $block->getItemsCount()) {
     <?php endif; ?>
     <div class="block-content"
          data-mage-init='{
-            "tabs": {"openedState":"active"}
+            "tabs": {"openedState":"active", "active": <?= $activeTab ?>}
          }'>
         <?php if ($itemsCount > 1): ?>
         <div class="tab-links">
@@ -51,7 +53,14 @@ if ($itemsCount = $block->getItemsCount()) {
         <?php foreach ($block->getPeriods() as $period) : ?>
             <?php $_items = $block->getItemsCollection($period); ?>
             <?php if ($_items && $_items->count()): ?>
-            <div class="items period-<?= $period ?>" id="#bestseller-<?= $period ?>" data-role="content">
+            <div class="items period-<?= $period ?>"
+                id="#bestseller-<?= $period ?>"
+                data-role="content"
+                data-render="<?=$iterator?>"
+                <?php if (($iterator - 1) != $activeTab) : ?>
+                style="display: none;"
+                <?php endif; ?>
+                >
                 <div class="products-<?= /* @escapeNotVerified */ $mode ?> <?= /* @escapeNotVerified */ $mode ?>">
                     <ol class="product-items">
                         <?php $iterator = 1; ?>
