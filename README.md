@@ -29,4 +29,4 @@
     php bin/magento maintenance:disable                 #Disable maintenance mode
 
 ## Versions tested
-> 2.2.5
+> 2.2.6
