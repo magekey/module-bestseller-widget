@@ -252,8 +252,16 @@ class Widget extends \Magento\Catalog\Block\Product\AbstractProduct implements B
                     case 'yearly':
                         $today = $this->_localeDate->date();
                         $interval = [
-                            'start' => $this->_localeDate->scopeDate(null, 'first day of January ' . $today->format('Y'), false),
-                            'end' => $this->_localeDate->scopeDate(null, 'last day of December ' . $today->format('Y'), false),
+                            'start' => $this->_localeDate->scopeDate(
+                                null,
+                                'first day of January ' . $today->format('Y'),
+                                false
+                            ),
+                            'end' => $this->_localeDate->scopeDate(
+                                null,
+                                'last day of December ' . $today->format('Y'),
+                                false
+                            ),
                         ];
                         break;
                     default:
